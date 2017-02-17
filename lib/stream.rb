@@ -43,8 +43,9 @@ class Stream
   # A stream instance is lazy, the +generator+ block will only be called when
   # a new item is needed.
   #
-  # The generator may #append multiple items to the stream in one call.  The
-  # call to #append will block until it is needed next.
+  # The generator must #append all items defining the stream in one call to
+  # the block.  The call to #append will block until it is needed.  If the
+  # stream is infinite the generator block must loop infinitely.
   #
   # Example:
   #

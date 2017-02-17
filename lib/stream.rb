@@ -83,6 +83,9 @@ class Stream
   # Appends +item+ to the stream.
   #
   # Call this only from the stream generator block.
+  #
+  # A call to #append will block until a call to #get retrieves the appended
+  # item.
 
   def append item
     @items << item
@@ -108,6 +111,9 @@ class Stream
   # Retrieves one item from the stream.
   #
   # Raises Stream::End if there are no more items.
+  #
+  # A call to #get will block until the generator block calls #append to add
+  # an item.
 
   def get
     @last_item = @output_fiber.resume
@@ -116,7 +122,9 @@ class Stream
   ##
   # Retrieves one item from the stream.
   #
-  # Raises Stream::End if there are no more items.
+  # This method is for compatibility with Enumerator#next
+  #
+  # See also #get_values
 
   alias next get
 
@@ -126,6 +134,9 @@ class Stream
   # This method is for compatibility with Enumerator#next_values
   #
   # Raises Stream::End if there are no more items.
+  #
+  # A call to #get_values will block until the generator block calls #append
+  # to add an item.
 
   def get_values
     [get]
@@ -136,7 +147,7 @@ class Stream
   #
   # This method is for compatibility with Enumerator#next_values
   #
-  # Raises Stream::End if there are no more items.
+  # See also #get_values
 
   alias next_values get_values
 
@@ -145,6 +156,9 @@ class Stream
   # pointer.
   #
   # Raises Stream::End if there are no more items.
+  #
+  # A call to #peek will block until the generator block calls #append to add
+  # an item.
 
   def peek
     current_item = @last_item
@@ -164,6 +178,9 @@ class Stream
   # This method is for compatibility with Enumerator#peek_values
   #
   # Raises Stream::End if there are no more items.
+  #
+  # A call to #peek will block until the generator block calls #append to add
+  # an item.
 
   def peek_values
     [peek]
@@ -173,6 +190,8 @@ class Stream
   # Returns the last item to the stream.
   #
   # You can only return one item to the stream.
+  #
+  # You cannot #unget after #peek or #peek_values.
 
   def unget
     raise MultipleUnget unless @last_item

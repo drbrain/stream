@@ -1,8 +1,18 @@
 require 'forwardable'
 
+##
+# Include Stream::Streamable to add Stream behavior to any object that
+# responds to #each.
+#
+# This behavior is similar to including Enumerable.
+
 module Stream::Streamable
 
   extend Forwardable
+
+  ##
+  # Turns the results from #each into a stream.  Items from #each will be
+  # returned lazily.
 
   def stream
     @__stream ||=
